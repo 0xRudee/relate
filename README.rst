@@ -60,6 +60,14 @@ Installation
 
 See the `installation guide <http://documen.tician.de/relate/misc.html#installation>`_.
 
+Docker deployment
+-----------------
+
+See the `Docker deployment guide <docs/docker-deployment.md>`_ for running
+RELATE with Docker: a simple local setup (no load balancer, no WAF) and a
+full production setup (TLS, WAF, scaled app tier), with architecture
+diagrams and step-by-step instructions.
+
 License
 -------
 
