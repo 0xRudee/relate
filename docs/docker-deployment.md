@@ -25,7 +25,7 @@ courses. In production it runs as a set of cooperating services
 | memcached | Out-of-process cache (progress bars, performance) | `CACHES = {"default": {"BACKEND": "django.core.cache.backends.memcached.PyMemcacheCache", "LOCATION": "host:11211"}}`; needs the `memcache` extra |
 | RabbitMQ | Celery message broker | `CELERY_BROKER_URL` defaults to `"amqp://"` in `local_settings_example.py` |
 | Celery workers | Long-running background tasks (grading, emails, course updates) | Started with `celery worker -A relate` |
-| Docker daemon | Sandboxed execution of student Python code | RELATE talks to the Docker API (`RELATE_DOCKER_URL`, default `unix://var/run/docker.sock`) and pulls a runner image. ⚠️ The example settings use `inducer/relate-runcode-python-amd64`, while the docs say `docker pull inducer/relate-runpy-amd64` — verify which tag exists before relying on it |
+| Docker daemon | Sandboxed execution of student Python code | RELATE talks to the Docker API (`RELATE_DOCKER_URL`, default `unix://var/run/docker.sock`) and pulls a runner image. ✅ Use `inducer/relate-runcode-python-amd64` — it's what `docker-image-run-py/docker-build.sh` tags and what `RELATE_DOCKER_RUNPY_IMAGE` sets in `local_settings_example.py` (on Docker Hub, updated 2025-01). The docs' `inducer/relate-runpy-amd64` is a legacy tag (last built 2018). A `-full` variant exists too. |
 | Course git repos | Course content (YAML/Markdown) versioned in git | Cloned with dulwich into `GIT_ROOT/<course-identifier>` when you use **"Set up new course"** in the web UI |
 | Static files | JS/CSS, incl. MathJax | Built with `npm install && npm run build`, then assembled with `./collectstatic.sh` — **do not** run `python manage.py collectstatic` directly (official note: it fails on MathJax sourcemap URLs) |
 
@@ -573,11 +573,11 @@ Then import courses exactly as in §3.7 (via the web UI), and set the
 | "Set up new course" flow: `identifier`, `git_source`, `course_file`; dulwich clone into `GIT_ROOT`; relate-sample has `course.yml` at root | ✅ verified (course/versioning.py, cloned relate-sample) |
 | Dulwich repack maintenance | ✅ verified (official docs) |
 | Dockerfile / compose files / ModSecurity-CRS WAF / certbot TLS / replica counts / volume names / `postgres:16` etc. | ⚠️ **proposed examples** — review before use |
-| Sandbox image tag | ⚠️ unresolved: `inducer/relate-runcode-python-amd64` (settings) vs `inducer/relate-runpy-amd64` (docs) — confirm which exists on Docker Hub |
+| Sandbox image tag | ✅ resolved: use `inducer/relate-runcode-python-amd64` (what `docker-image-run-py/docker-build.sh` tags and what `RELATE_DOCKER_RUNPY_IMAGE` sets; on Docker Hub, updated 2025-01). The docs' `inducer/relate-runpy-amd64` is a legacy tag (last built 2018). A `-full` variant exists too |
 
 ## 6. Open questions for the maintainer
 
-1. Which sandbox image tag is correct on Docker Hub?
+1. ~~Which sandbox image tag is correct on Docker Hub?~~ Resolved: use `inducer/relate-runcode-python-amd64` (see §5).
 2. Is ModSecurity + OWASP CRS the WAF you want, or a cloud WAF (Cloudflare/AWS)?
 3. Should the simple local setup include the docker-socket mount for code
    questions, or keep it minimal?
